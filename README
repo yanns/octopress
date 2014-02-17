@@ -1,0 +1,13 @@
+= generate blog
+bundle exec rake generate
+
+= preview
+bundle exec rake preview
+
+= deploy
+bundle exec rake deploy
+
+= fix push in _deploy
+cd _deploy
+git fetch origin
+git reset --hard origin/master
