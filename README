@@ -4,6 +4,9 @@ bundle exec rake generate
 = preview
 bundle exec rake preview
 
+= new post
+bundle exec rake new_post["title"]
+
 = deploy
 bundle exec rake deploy
 
