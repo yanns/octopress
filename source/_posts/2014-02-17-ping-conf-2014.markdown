@@ -1,0 +1,93 @@
+---
+layout: post
+title: "ping conf 2014"
+date: 2014-02-17 16:49
+comments: true
+categories:
+---
+
+In January, I had the pleasure to participate and to give a talk at the [ping conf](http://www.ping-conf.com/).
+
+Ping conf was the first world wide community conference about the [Play Framework!](http://www.playframework.com/).
+
+This conference was very well organized. I'd like to thanks all the organizers one more time for this.
+It was a good opportunity to meet people I knew only on the mailing list or on twitter.
+
+The talks were very interesting. Some notices:
+#### "Javascript functionality coming to Play 2.3" from [Christopher Hunt](@huntchr)
+Typesafe take the JavaScript build chain very seriously and the new [sbt-web](https://github.com/sbt/sbt-web) offers a lot of new functionalities.
+IMO, one of the most important is the possibility to use NodeJS as JavaScript engine to have a very performance JavaScript build.<br/>
+[slides](http://huntc.github.io/sbt-web-presentation/#/step-1)
+
+#### "Typesafing your blobs with Scala" from [Julien Tournay](@skaalf) and Pascal Voitot
+Julien and Pascal show us the new [validation API](https://github.com/jto/Play20/tree/new_validation_api/documentation/manual/scalaGuide/main/validation), unifying the Form and JSON validation.
+This new API should appear in Play 2.3.<br/>
+[More info](http://jto.github.io/articles/play_new_validation_api/)<br/>
+[slides](https://docs.google.com/presentation/d/1bc4437zIO3dUD0cYoSFDbNjrSErY3soURfE5QUErbgw/pub?start=false&loop=false&delayms=3000#slide=id.g11c889a6e_23)
+
+#### "Writing a reactive web app with Scala.js and ReactJS" from [Matthias Nehlsen](@matthiasnehlsen)
+Matthias, famous for his [blog](http://matthiasnehlsen.com/) and his [realtime reactive tweet analysing application](http://birdwatch.matthiasnehlsen.com/) talked about the [ReactJS UI library](http://facebook.github.io/react/) combined with [ScalaJS](http://www.scala-js.org/).
+These two tools can be well combined, as ReactJS like immutable data structure, that ScalaJS can provide.
+
+#### "Play2 and Redis : when simplicity meets productivity" from [Nicolas Martignole](@nmartignole)
+Nicolas talked about his experience with Redis and Play. This combination is looking very simple and performant.
+
+#### "Building composable, streaming, testable Play apps" from [Yevgeniy Brikman](@brikis98)
+The "Jim" from LinkedIn talked about how to compose web pages together, using the [Facebook's BigPipe concept](https://www.facebook.com/note.php?note_id=389414033919).
+Very interesting to decompose a big portal into small web components.<br/>
+[slides](http://de.slideshare.net/brikis98/composable-and-streamable-play-apps)
+
+#### "Play is for Performance" from [James Roper](@jroper), tech lead for Play! framework
+Very interesting talk about how to optimize (or not) an asynchronous play! application.<br/>
+[slides as play application](https://github.com/jroper/play-is-for-performance) (simply check it out and start the play application, it is very impressive)
+
+#### "Making the case for Play" from [Adam Evans](@ajevans85) and [Asher Glynn](@asherglynn), BBC
+Adam and Asher talked about change in an organization like the BBC, how they introduced the Play Framework!<br/>
+[slides](http://pt.slideshare.net/ajevans/making-the-30191542)
+
+#### [Grant Klopper](@grantklopper), Software engineer at The Guardian.
+Grant made a change during the talk and push it into production, very impressive.
+
+#### [Tobias Neef](@tobnee)
+Tobias talk about action composition and filter in Play, when to use the first ones and when to use the others.
+
+#### "Async: Reacting instead of waiting for better times" from [Johan Andrén](@apnylle)
+Johan talk about asynchronous programming and how it works with Play. A very good introduction!<br/>
+[slides](http://de.slideshare.net/johanandren/async-react-dont-wait-ping-conf)
+
+
+<hr/>
+My talk was about "Structure your Play application with the cake pattern (and test it)"
+
+I talked about how to organize a Play! application written in Scala into components with the cake pattern.
+The main goal of these components is to expose service only to others components, and to declare dependencies if needed.
+
+As a side effect, the cake pattern allows to inject dependencies at compile time.
+A particularity is that this "dependency injection" mechanism does not need any container like Spring or Guice at runtime.
+
+[Video of my talk "Structure your Play application with the cake pattern (and test it)"](http://www.ping-conf.com/#yannsimon)
+[slides](http://de.slideshare.net/yann_s/play-withcake-export2)
+
+I had a lot of good feedbacks, like these ones:<br/>
+{% blockquote Gilt, http://tech.gilt.com/post/74733533436/a-few-things-about-ping-a-play-framework-conference %}
+Leanovate Software Engineer Yann Simon gives the best presentation on the cake pattern I’ve ever seen.
+{% endblockquote %}
+{% blockquote Csaba Palfi, http://csaba.palfi.me/ping-conf-day-1/ %}
+it was great that Yann pointed out the disadvantages as well every step along the way and made it clear how far it’s worth going in various cases.
+{% endblockquote %}
+{% blockquote kinja, http://pingconference.kinja.com/yann-simon-1502530900 %}
+Currently talking, is astounding the audience with live baking an application, slam dunk videos feat. Sulley - of Monsters fame - and hand drawn presentation slides!
+{% endblockquote %}
+{% blockquote Marius Soutier, http://www.mariussoutier.com/blog/2014/01/20/ping-conference-play-edition-day-1/ %}
+All this was presented using funny monster videos and a French-German accent.
+{% endblockquote %}
+
+
+<blockquote class="twitter-tweet" lang="en"><p>the infamous Totoro-defense! <a href="https://twitter.com/search?q=%23pingconf&amp;src=hash">#pingconf</a> <a href="http://t.co/EnJhauj8tw">pic.twitter.com/EnJhauj8tw</a></p>&mdash; serif (@_serif) <a href="https://twitter.com/_serif/statuses/423793818857930752">January 16, 2014</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<hr/>
+Some people saw that I was using my phone to controll the slideshow and asked me how I did that.
+I was simply using the [LibreOffice Impress](https://www.libreoffice.org/) with [Impress Remote app](https://play.google.com/store/apps/details?id=org.libreoffice.impressremote&hl=en) on my phone.
+It works very well. You can see on your phone the duration of your talk, the current, previous and next slide.
+
