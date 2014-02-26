@@ -19,7 +19,7 @@ Typesafe take the JavaScript build chain very seriously and the new [sbt-web](ht
 IMO, one of the most important is the possibility to use NodeJS as JavaScript engine. The performance of the JavaScript build pipeline in Play is similar or even better than the ones based on NodeJS (like Grunt or Gulp)<br/>
 [slides](http://huntc.github.io/sbt-web-presentation/#/step-1)
 
-#### "Typesafing your blobs with Scala" from [Julien Tournay](https://twitter.com/skaalf) and Pascal Voitot
+#### "Typesafing your blobs with Scala" from [Julien Tournay](https://twitter.com/skaalf) and [Pascal Voitot](https://twitter.com/mandubian/)
 Julien and Pascal show us the new [validation API](https://github.com/jto/Play20/tree/new_validation_api/documentation/manual/scalaGuide/main/validation), unifying the Form and JSON validation.
 This new API should appear in Play 2.3.<br/>
 [More info](http://jto.github.io/articles/play_new_validation_api/)<br/>
