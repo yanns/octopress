@@ -56,7 +56,7 @@ With this directive, AngularJS can hide the HTML as long as it is not ready.
 ### Welcome back to server side rendering
 
 Another option is to pre-render the HTML on the server side and to serve a completely ready HTML to the browser.
-That seems quite contradictary to the essence of JavaScript applications, but it is an interesting way.
+That seems quite contradictory to the essence of JavaScript applications, but it is an interesting way.
 
 Form example, React can render a UI component without any browser with [React.renderComponentToString](http://facebook.github.io/react/docs/top-level-api.html#react.rendercomponenttostring).
 
@@ -136,7 +136,7 @@ It then loads the data given as first parameter in the controller
 var data = JSON.parse(process.argv[2]);
 ```
 
-It renders the CommentBox component to a String and output it to console.log so that the scala controller can receive the result with `result.output.toArray`
+It renders the CommentBox component to a String and output it to console.log so that the Scala controller can receive the result with `result.output.toArray`
 
 ```javascript
 console.log(React.renderComponentToString(CommentBox(backend)({data: data, onServerSide: true})));
