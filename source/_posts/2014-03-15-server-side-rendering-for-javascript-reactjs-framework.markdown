@@ -24,7 +24,7 @@ We will look at an [example with React](http://play-react.herokuapp.com/clientSi
 To display the HTML, a few steps are needed:
 
 1. The browser loads HTML, CSS and JavaScript.<br>
-   It can then display some HTML delivered directly by the server.<br>
+   It displays the HTML delivered directly by the server.<br>
 	![The browser shows the HTML coming from the server](/assets/2014-03-15/server.png)
 
 	With AngularJS, if [inline expression](http://docs.angularjs.org/guide/expression) are used, the user can see the following for a few milliseconds:<br/>
@@ -55,10 +55,11 @@ With this directive, AngularJS can hide the HTML as long as it is not ready.
 
 ### Welcome back to server side rendering
 
-Another option is to pre-render the HTML on the server side and to serve a completely ready HTML to the browser.
-That seems quite contradictory to the essence of JavaScript applications, but it is an interesting way.
+Instead of rendering everything in the browser, it is also possible to first render the page on on the server side, serve it when ready, and when updating it on the client side when necessary.
 
-Form example, React can render a UI component without any browser with [React.renderComponentToString](http://facebook.github.io/react/docs/top-level-api.html#react.rendercomponenttostring).
+(Please notice that this technic allows the HTML to be indexed for search engines that do not execute the JavaScript.)
+
+From example, React can render a UI component without any browser with [React.renderComponentToString](http://facebook.github.io/react/docs/top-level-api.html#react.rendercomponenttostring).
 
 With this function, the complete page can be prepared on the server side, send under this form to the browser that can directly display the ready application. On the client side, the same JavaScript code can dynamically manipulate this DOM as a normal client side application.
 
@@ -124,7 +125,7 @@ complete controller code:
   }
 ```
 
-The code `serverside.js` uses the node.js API to render our main component (CommentBox).
+The code `serverside.js` uses the [node.js modules API](http://nodejs.org/api/modules.html#modules_module_require_id) to render our main component (CommentBox).
 ```javascript
 var React = require('./react'),
     CommentBox = require('./CommentBox');
