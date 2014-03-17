@@ -189,4 +189,49 @@ To implement this, I used the Facebook’s BigPipe concept as presented in the [
 It is not a "Silver Bullet" as we are still waiting for the data before displaying it to the user (that makes sense).
 But the browser can load the stylesheets, the JavaScripts very quickly, leading to a more responsive page.
 
+## Integrate Play and trireme
+To resolve node.js modules, trireme needs to access the JavaScripts directly on the file system.
+But Play Framework package all the public assets in the jar, making the JavaScript assets not available with [Play.getFile](http://www.playframework.com/documentation/2.2.x/api/scala/index.html#play.api.Play$)
+
+It would be easier if trireme would use a [FileSystem](http://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystem.html) object, but this API is only available from Java 7.
+
+To wordaround this, I configured the [SBT Universal plugin](https://github.com/sbt/sbt-native-packager) to deploy the public assets to the file system:
+
+* in build.sbt:
+```scala
+PublicOnFileSystem.settings
+```
+* project/PublicOnFileSystem.scala
+```scala
+import sbt._
+import sbt.Keys._
+import play.Keys.playAssetsDirectories
+import com.typesafe.sbt.SbtNativePackager._
+
+object PublicOnFileSystem {
+
+  val settings = Seq(
+    mappings in Universal <++= playAssetsDirectories map { directories: Seq[File] =>
+      directories.flatMap { dir: File =>
+        val directoryLen = dir.getCanonicalPath.length
+        val pathFinder = dir ** "*"
+        pathFinder.get map {
+          publicFile: File =>
+            publicFile -> ("public/" + publicFile.getCanonicalPath.substring(directoryLen))
+        }
+      }
+    }
+  )
+}
+```
+
+## Conclusion
+
+I personaly think that we will more and more use JavaScript even on the server side.
+Projects like [Vert.x](http://vertx.io/) are interesting because they support this from the beginning.
+With Play Framework on the JVM, there is currently [a](http://openjdk.java.net/projects/nashorn/) [lot](https://github.com/typesafehub/webdriver) [of](https://github.com/typesafehub/js-engine) [effort](https://github.com/sbt/sbt-web) [put](http://www.webjars.org/) to support that.
+
+This proof of concept shows that it is already possible to achieve that.
+And I guess it will be even easier in the future.
+
 If you need more information, the [code is available on github](https://github.com/yanns/play-react).
