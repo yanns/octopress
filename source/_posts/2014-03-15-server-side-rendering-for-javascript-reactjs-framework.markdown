@@ -55,7 +55,7 @@ With this directive, AngularJS can hide the HTML as long as it is not ready.
 
 ### Welcome back to server side rendering
 
-Instead of rendering everything in the browser, it is also possible to first render the page on on the server side, serve it when ready, and when updating it on the client side when necessary.
+Instead of rendering everything in the browser, it is also possible to first render the page on the server side, serve it when ready, and when updating it on the client side when necessary.
 
 (Please notice that this technic allows the HTML to be indexed for search engines that do not execute the JavaScript.)
 
@@ -169,7 +169,7 @@ console.log(React.renderComponentToString(CommentBox(backend)({data: data, onSer
 The drawback with pre-rendering the page on the server side is that we have to wait to have all the data before sending the page.
 In the [sample application](http://play-react.herokuapp.com/serverSide), I introduced a latency when requesting the data to simulate a slow database.
 
-The browser must also wait long before getting any HTML. The following diagram shows that the application deployed on Heroku delivers the page in more than 1s!
+The browser must also wait long before getting any HTML. The following diagram shows that the application (deployed on Heroku) needs more than one second to deliver the page!
 ![The browser is waiting for the server](/assets/2014-03-15/wait_for_server.png)
 
 
