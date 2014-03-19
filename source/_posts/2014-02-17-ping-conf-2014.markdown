@@ -4,6 +4,7 @@ title: "ping conf 2014"
 date: 2014-02-17 16:49
 comments: true
 categories:
+- Play Framework
 ---
 
 In January, I had the pleasure to participate and give a talk at the [ping conf](http://www.ping-conf.com/).
