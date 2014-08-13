@@ -26,7 +26,7 @@ This reactive consuming or construction of IO stream is designed in play with [I
 
 ### Servlet containers use blocking IO
 
-On the other hand, servlet containers traditionally use a [thread per request](http://www.slideshare.net/brikis98/the-play-framework-at-linkedin/62). When doing IO (database access, external web request), the thread waits for the IO completion (blocking IO). That's why servlet containers needs a lot of working threads to handle requests in parallel ([default 200 threads max for tomcat](http://tomcat.apache.org/tomcat-7.0-doc/config/executor.html))
+On the other hand, servlet containers traditionally use a [thread per request](http://www.slideshare.net/brikis98/the-play-framework-at-linkedin/62). When doing IO (database access, external web request), the thread waits for the IO completion (blocking IO). That's why servlet containers need a lot of working threads to handle requests in parallel ([default 200 threads max for tomcat](http://tomcat.apache.org/tomcat-7.0-doc/config/executor.html))
 
 #### Asynchronous 3.0 servlet
 
@@ -36,13 +36,13 @@ For example, if an application makes an HTTP request to another web service usin
 #### Limitations of asynchronous 3.0 servlet
 
 When uploading or downloading a big file, the servlet container is able to stream the data. But between each chunks, the servlet thread is blocking, waiting for the next one.
-It is not possible to consume one chunk, and later when we are ready to consume another one, tell the container: “now I am ready, you can send me the next chunk as soon as you receive one from the browser”.
+It is not possible to consume one chunk, and later, when we are ready to consume another one, tell the container: “now I am ready, you can send me the next chunk as soon as you receive one from the browser”.
 
 If a browser needs an hour to upload a file with a slow Internet connection, the container needs a thread during an hour, even if the application does not do anything, just waiting for the upload completion.
 
 ### Play applications deployed as war are limited by the servlet container
 
-A Play application deployed in a war container are also limited by the technical possibilites of the servlet API. With a servlet 2.x or 3.0, a Play application does not scale as well as when run natively.
+A Play application deployed in a war container is limited by the technical possibilites of the servlet API. With a servlet 2.x or 3.0, a Play application does not scale as well as when run natively.
 
 ### New asynchronous IO in servlet 3.1
 
@@ -66,7 +66,7 @@ Also please test this new version and report issues!
 
 To scale as much as possible, the application should not block. It should always use asynchronous IO API like in the WS client.
 
-But in the Java World, a lot a librairies are still designed for a one-thread-per-request model and do not provide asynchronous API. It is for example the case for a JDBC driver. In that case, a separate dispatcher should be configured to handle especially blocking IO. More Information for this can be found in the [Play Framework documentation](http://www.playframework.com/documentation/2.3.x/ThreadPools).
+But in the Java World a lot a librairies are still designed for a one-thread-per-request model and do not provide asynchronous API. It is for example the case for a JDBC driver. In that case, a separate dispatcher should be configured to handle blocking IO. More Information for this can be found in the [Play Framework documentation](http://www.playframework.com/documentation/2.3.x/ThreadPools).
 
 
 ### Implementation history
