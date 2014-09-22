@@ -11,10 +11,16 @@ categories:
 
 I'd like the share with this post one solution I found to use a Mapped Diagnostic Context (MDC) in an asynchronous environment like the play framework.
 
+## Edit (September 2014)
+
+Based on [one implementation from James Roper](https://github.com/jroper/thread-local-context-propagation/), I added one solution based on [Akka Dispatcher](http://doc.akka.io/docs/akka/current/scala/dispatchers.html).
+
 ## tl;dr
 
-This solution uses a custom `ExecutionContext` that propagates the MDC from the caller's thread to the callee's one.
-A custom `ActionBuilder` is necessary as well to completely use this custom `ExectionContext`.
+This post provides two solution to propagate the MDC context in an asynchronous Play application:
+
+- using a custom Akka `Dispatcher`. This solution needs minimal change to a current application.
+- using a custom `ExecutionContext` that propagates the MDC from the caller's thread to the callee's one. A custom `ActionBuilder` is necessary as well to completely use this custom `ExectionContext`.
 
 ## The Mapped Diagnostic Context (MDC)
 
@@ -37,7 +43,7 @@ For example, if we want to display the current user ID:
       MDC.remove("X-UserId")
     }
 ```
-(This code could be in a [filter](http://www.playframework.com/documentation/2.2.x/ScalaHttpFilters), run for each request)
+(This code could be in a [filter](https://www.playframework.com/documentation/latest/ScalaHttpFilters), run for each request)
 
 Logback must be configured to display the `X-UserId` value:
 ```xml
@@ -61,9 +67,135 @@ Play framework, on the other hand, is [asynchronous](http://www.playframework.co
 
 The implementation of the MDC with a `ThreadLocal` cannot work with this non-blocking asynchronous threading model.
 
-## Defining a custom execution context
+## First solution with Akka Dispatcher
 
-The dispatching of the jobs on different threads in done with an `ExecutionContext`. Each `ExecutionContext` manages a [thread pool](http://www.playframework.com/documentation/2.2.x/ThreadPools).
+#### Defining a custom Akka dispatcher
+
+Play dispatchs the jobs on different threads with a [thread pool](https://www.playframework.com/documentation/latest/ThreadPools). The Play default thread pool is an [Akka dispatcher](http://doc.akka.io/docs/akka/current/scala/dispatchers.html).
+
+To use the MDC, we provide a custom Akka `Dispatcher` that propagates the MDC from the caller's thread to the callee's one.
+{% raw %}
+```scala
+package monitoring
+
+import java.util.concurrent.TimeUnit
+
+import akka.dispatch._
+import com.typesafe.config.Config
+import org.slf4j.MDC
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.{Duration, FiniteDuration}
+
+/**
+ * Configurator for a MDC propagating dispatcher.
+ *
+ * To use it, configure play like this:
+ * {{{
+ * play {
+ *   akka {
+ *     actor {
+ *       default-dispatcher = {
+ *         type = "monitoring.MDCPropagatingDispatcherConfigurator"
+ *       }
+ *     }
+ *   }
+ * }
+ * }}}
+ *
+ * Credits to James Roper for the [[https://github.com/jroper/thread-local-context-propagation/ initial implementation]]
+ */
+class MDCPropagatingDispatcherConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
+  extends MessageDispatcherConfigurator(config, prerequisites) {
+
+  private val instance = new MDCPropagatingDispatcher(
+    this,
+    config.getString("id"),
+    config.getInt("throughput"),
+    FiniteDuration(config.getDuration("throughput-deadline-time", TimeUnit.NANOSECONDS), TimeUnit.NANOSECONDS),
+    configureExecutor(),
+    FiniteDuration(config.getDuration("shutdown-timeout", TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS))
+
+  override def dispatcher(): MessageDispatcher = instance
+}
+
+/**
+ * A MDC propagating dispatcher.
+ *
+ * This dispatcher propagates the MDC current request context if it's set when it's executed.
+ */
+class MDCPropagatingDispatcher(_configurator: MessageDispatcherConfigurator,
+                               id: String,
+                               throughput: Int,
+                               throughputDeadlineTime: Duration,
+                               executorServiceFactoryProvider: ExecutorServiceFactoryProvider,
+                               shutdownTimeout: FiniteDuration)
+  extends Dispatcher(_configurator, id, throughput, throughputDeadlineTime, executorServiceFactoryProvider, shutdownTimeout ) {
+
+  self =>
+
+  override def prepare(): ExecutionContext = new ExecutionContext {
+    // capture the MDC
+    val mdcContext = MDC.getCopyOfContextMap
+
+    def execute(r: Runnable) = self.execute(new Runnable {
+      def run() = {
+        // backup the callee MDC context
+        val oldMDCContext = MDC.getCopyOfContextMap
+
+        // Run the runnable with the captured context
+        setContextMap(mdcContext)
+        try {
+          r.run()
+        } finally {
+          // restore the callee MDC context
+          setContextMap(oldMDCContext)
+        }
+      }
+    })
+    def reportFailure(t: Throwable) = self.reportFailure(t)
+  }
+
+  private[this] def setContextMap(context: java.util.Map[String, String]) {
+    if (context == null) {
+      MDC.clear()
+    } else {
+      MDC.setContextMap(context)
+    }
+  }
+
+}
+```
+{% endraw %}
+
+#### Using a custom Akka dispatcher everywhere:
+
+To use this custom Akka dispatcher everywhere, we just have to configure it:
+```bash application.conf
+play {
+  akka {
+    actor {
+      default-dispatcher = {
+        type = "monitoring.MDCPropagatingDispatcherConfigurator"
+      }
+    }
+  }
+}
+```
+and that's all! ;)
+
+The MDC context is propagated when we use the play default [`ExecutionContext`](https://www.playframework.com/documentation/2.3.x/api/scala/index.html#play.api.libs.concurrent.Execution$).
+
+#### Optimization
+
+So that this approach works in dev mode, simply make a library (jar) of this custom Akka dispatcher and add this as dependency in your play application.
+
+
+## Second solution with a custom execution context
+
+#### Defining a custom execution context
+
+The dispatching of the jobs on different threads in done with an `ExecutionContext`. Each `ExecutionContext` manages a [thread pool](https://www.playframework.com/documentation/latest/ThreadPools).
 
 To use the MDC, we just have to use a custom `ExecutionContext` that propagates the MDC from the caller's thread to the callee's one.
 ```scala
@@ -142,12 +274,12 @@ object Execution {
 
 Now we will use the `concurrent.Execution.defaultContext` instead of the one from play (`play.api.libs.concurrent.Execution.defaultContext`)
 
-## Using a custom execution context everywhere
+#### Using a custom execution context everywhere
 
 Using a custom execution context is sometimes as easy as replacing
 `import play.api.libs.concurrent.Execution.Implicits._` with `import concurrent.Execution.Implicits._`
 
-The default [`Action`](http://www.playframework.com/documentation/2.2.x/ScalaActions) uses the default `play.api.libs.concurrent.Execution.defaultContext`.
+The default [`Action`](https://www.playframework.com/documentation/latest/ScalaActions) uses the default `play.api.libs.concurrent.Execution.defaultContext`.
 We must define a custom `ActionBuilder` that uses our new `ExecutionContext`:
 ```scala
 package controllers
@@ -172,5 +304,5 @@ object Action extends ActionBuilder[Request] {
 Instead of using of `play.api.mvc.Action`, we just have to use the newly defined `controllers.Action`.
 
 
-With these customizations, we are now able to use the Mapped Diagnostic Context (MDC) with asynchronous actions written in Scala.
+With each of these customizations, we are now able to use the Mapped Diagnostic Context (MDC) with asynchronous actions written in Scala.
 
