@@ -66,7 +66,7 @@ The main goal of these components is to encaspulate and expose services only to 
 As a side effect, the cake pattern allows to inject dependencies at compile time.
 A particularity of this "dependency injection" mechanism is that it does not need any container like Spring or Guice at runtime.
 
-[Video of my talk "Structure your Play application with the cake pattern (and test it)"](http://www.ping-conf.com/#yannsimon)<br/>
+[Video of my talk "Structure your Play application with the cake pattern (and test it)"](http://www.ustream.tv/recorded/42775808)<br/>
 [slides](http://de.slideshare.net/yann_s/play-withcake-export2)
 
 I had great feedbacks, like these ones:<br/>
