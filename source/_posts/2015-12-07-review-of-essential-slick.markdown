@@ -8,14 +8,14 @@ categories:
 
 I had the pleasure to review the book "[Essential Slick](http://underscore.io/books/essential-slick/)" about [Slick 3](http://slick.typesafe.com/).
 
-I really appreciated the lecture. For anyone starting a project with Slick, I highly recommand this book, in particulary to learn about:
+I really appreciated the lecture. For anyone starting a project with Slick, I highly recommend this book, in particular to learn about:
 
 - how to build queries that can be composed and re-used
 - how to structure the code
 - the patterns, anti-patterns and pitfalls to avoid.
 
 
-The book goes through a lot of concepts, from simple queries and data-modeling to views, projections, joins and aggregates.
+The book goes over a lot of concepts, from simple queries and data-modeling to views, projections, joins and aggregates.
 
 Slick 3 has very powerful concepts that could be hard to manage. The book tries to teach us how to use them. 
 
@@ -29,7 +29,7 @@ What I really liked:
 - exercices: I think I can only learn a library when I use it and the exercises in the book are a very good opportunity to practice.
 - the sbt console is configured so that I could copy/paste all examples from the book into the console and play with them.
 - focus on composability and re-usability
-- the book also shows when one abstraction is not optimal for one problem and propose some alternatives.
+- the book also shows when one abstraction is not optimal for one problem and proposes some alternatives.
 
 What I missed:
 
