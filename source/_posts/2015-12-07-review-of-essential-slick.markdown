@@ -19,7 +19,7 @@ The book goes over a lot of concepts, from simple queries and data-modeling to v
 
 Slick 3 has very powerful concepts that could be hard to manage. The book tries to teach us how to use them. 
 
-Some steps are sometimes high, like in the 2nd chapter, where Queries, Actions, Effects, Streaming are introduced in a few pages.
+Some chapters are more demanding, for instance the 2nd chapter introduces in only a few pages concepts like Queries, Actions, Effects, Streaming.
 
 But once the step managed, I had the feeling to have the good abstractions in my mind to build an application based on Slick. And I could use these concepts to solve the exercises.
 
@@ -27,13 +27,13 @@ But once the step managed, I had the feeling to have the good abstractions in my
 What I really liked:
 
 - exercices: I think I can only learn a library when I use it and the exercises in the book are a very good opportunity to practice.
-- the sbt console is configured so that I could copy/paste all examples from the book into the console and play with them.
+- the sbt console is so configured that I could copy/paste all examples from the book into the console and play with them.
 - focus on composability and re-usability
-- the book also shows when one abstraction is not optimal for one problem and proposes some alternatives.
+- the book also points out when one abstraction is not optimal for a particular problem and proposes some alternatives.
 
 What I missed:
 
-- Slick 3.0 is a lot about asynchronity, streaming and I wish the book could dig further in these concepts.
+- the 3.0 version of Slick is a lot about asynchronity, streaming and I wish the book could dig further in these concepts.
 
 All in all, a very good book!
 
