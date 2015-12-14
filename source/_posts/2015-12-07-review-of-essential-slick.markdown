@@ -8,7 +8,7 @@ categories:
 
 I had the pleasure to review the book "[Essential Slick](http://underscore.io/books/essential-slick/)" about [Slick 3](http://slick.typesafe.com/).
 
-I really appreciated the lecture. For anyone starting a project with Slick, I highly recommend this book, in particular to learn about:
+I really enjoyed reading it. For anyone starting a project with Slick, I highly recommend this book, in particular to learn about:
 
 - how to build queries that can be composed and re-used
 - how to structure the code
