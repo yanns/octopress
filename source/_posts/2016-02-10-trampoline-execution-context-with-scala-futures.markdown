@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "trampoline execution context with scala Futures"
-date: 2016-01-19 08:31:33 +0100
+date: 2016-02-10 21:19:33 +0100
 comments: true
 categories: 
 ---
@@ -15,7 +15,7 @@ He explains the details very well. If you have not read that post, I recommand i
 The main point if that Scala `Future` adds a context switching for each `map` or `flatMap`.
 With Scalaz `Task`, we have to describe which tasks need a new thread, the other ones are called on the same thread as the previous computation, avoiding these context switchings.
 
-With Scala Futures, if you want to multiply the result of a `Future[Int]` by 2, you need an `ExecutionContext:
+With Scala Futures, if you want to multiply the result of a `Future[Int]` by 2, you need an `ExecutionContext` (EC):
 ```scala
 import scala.concurrent.ExecutionContext.global
 val futureCount: Future[Long] = futureCountOfUsers()
@@ -33,7 +33,7 @@ To compute the `i => i * 2`, the ExecutionContext may use a different thread tha
 
 This overhead is not problematic for simple computations. But if we do 100 or 1000 of them, then it can have a significant impact on performances.
 
-And my opinion, Scala Futures have other problems.
+And in my opinion, Scala Futures have other downsides.
 
 For example, with the following code:
 ```scala
@@ -57,7 +57,7 @@ for {
 computes `functionThatReturnsFutureValue1` and `functionThatReturnsFutureValue2` in parallel.
 
 It means that Scala Futures do not respect the principe of ["referential transparency"](https://en.wikipedia.org/wiki/Referential_transparency).
-It's not only a theoretical problem, but bits a lot of new users of Scala Futures.
+It's not only a theoretical problem, new users of Scala Futures often have problems with that.
 
 
 And what I do not like about Scala Future is that we always need an ExecutionContext, even for small non-blocking computations.
@@ -77,7 +77,7 @@ def multiplyBy2(f: Future[Long])(implicit ec: ExecutionContext): Future[Long] =
 My first impression with Scalaz Tasks is that they have a better design than the Scala Futures.
 But I have not used Scalaz Tasks extensively and cannot say if they have other problems.
 
-All in all, Scala Futures are here to stay. They are part of the standard API and are used everywhere.
+But all in all, Scala Futures are here to stay. They are part of the standard API and are used everywhere.
 
 I'm still wondering why the Scala Futures were designed that way.
 I can only guess, but I think this avoids some common pitfalls:
@@ -87,11 +87,11 @@ I can only guess, but I think this avoids some common pitfalls:
 - and a design like Scala Tasks works well if all parts of the system are non-blocking and using one thread pool. The reality is more complex. Each driver/http client can use its own thread pool. For example, an asynchronous http client may have its own thread pool because some parts of the networking API in Java is blocking like the standard ns lookup `InetAddress.getByName()`. Running a computation directly on the thread without forking it will run the computation of the thread pool of the http client. And that can lead to an exhaustion of the thread pool of the http client, and the http client cannot function anymore.
 
 
-### Introducing the trampoline EC
+### Introducing the trampoline execution context
 
-This performance problem with the standard EC is not new. The play framework team had this problem, especially with Iteratees that compute everything with a Future and uses callbacks extensively on stream of data.
+This performance problem with the standard execution context is not new. The play framework team had this problem, especially with Iteratees that compute everything with a Future and uses callbacks extensively on stream of data.
 To solve this problem, James Roper introduced the [trampoline Execution Context](https://github.com/playframework/playframework/blob/master/framework/src/iteratees/src/main/scala/play/api/libs/iteratee/Execution.scala#L31-L128).
-This trampoline EC is a great piece of software:
+This trampoline execution context is a great piece of software:
 
 - it makes sure the callbacks are run on the same thread than the future to avoid context switchings.
 - it does not overflow with recursive callbacks.
@@ -111,14 +111,14 @@ With n = 5 000 000:
 
 ### Should we use the trampoline EC?
 
-If you are quite confident with EC, then you can use this trampoline EC if:
+When we are confident with execution contexts, I thing we can use this trampoline EC if:
 
-- you are sure that the callback is running very fast. For example:
+- the callback is running very fast. For example:
 ```scala
 def multiplyBy2(f: Future[Long]): Future[Long] =
   f.map(_ * 2)(trampolineEC)
 ```
-- you never call some blocking IO. This point can be tricky: some scala libs can use some java libs that use InputStream or OutputStream that can block.
+- we never call some blocking IO. This point can be tricky: some scala libs can use some java libs that use InputStream or OutputStream that can block.
 
 If you are unsure, use the standard EC.
 
