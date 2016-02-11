@@ -6,11 +6,11 @@ comments: true
 categories: 
 ---
 
-Disclaimer: I am continually learning, and this post reflects my current understanding of the topic. I may be wrong. Do not believe directly what I write. Test what you need. If you want to provide me some precisions, some corrections, please contact me on [twitter](https://twitter.com/simon_yann), and I'll fix this post.
+Disclaimer: I am continually learning, and this post reflects my current understanding of the topic. I may be wrong. Do not believe directly what I write. Test what you need. If you want to provide some precisions or corrections, please contact me on [twitter](https://twitter.com/simon_yann), and I'll fix this post.
 
 [Rúnar](https://twitter.com/runarorama) showed in a [blog post how Scalaz Tasks can perform better than the Scala Futures](http://blog.higher-order.com/blog/2015/06/18/easy-performance-wins-with-scalaz/).
 
-He explains the details very well. If you have not read that post, I recommand it highly.
+He explains the details very well. If you have not read that post, I recommend it highly.
 
 The main point if that Scala `Future` adds a context switching for each `map` or `flatMap`.
 With Scalaz `Task`, we have to describe which tasks need a new thread, the other ones are called on the same thread as the previous computation, avoiding these context switchings.
