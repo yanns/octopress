@@ -40,7 +40,7 @@ sbt.version=0.13.11
 -import PlayKeys._
 +import play.sbt.PlayImport._
 ```
-I also add to replace `playVersion.value` with `play.core.PlayVersion.current`
+I also had to replace `playVersion.value` with `play.core.PlayVersion.current`.
 
 The goal of this first step is to be able to load the application with `sbt`, even if the application itself does not compile. At this point, Intellij can load the application with a play 2.4 version, and can provide auto-completion.
 
@@ -67,10 +67,10 @@ In sbt:
 ~run
 ```
 
-At this point, I sometimes discovered version conflicts between libs (ex: Netty versions) and I know if I can complete the migration or if I have to update a dependency before.
+When running the application, I sometimes discovered version conflicts between libs (ex: Netty versions) and I know if I can complete the migration or if I have to update a dependency before.
 
 Analysing all dependencies can be difficult.
-I use the [sbt-dependency-graph](https://github.com/jrudolph/sbt-dependency-graph) to find overriding versions.
+I use the [sbt-dependency-graph](https://github.com/jrudolph/sbt-dependency-graph) to have an overview of all dependencies and find overriding versions.
 
 
 ### [4.](#fix-tests) <a name="fix-tests"></a> Fix the tests
@@ -83,11 +83,14 @@ In sbt:
 ```
 
 When all the tests are green, the application is migrated.
+The migration to play 2.4 is now completed, profit from the new version! ;)
 
 
 ### [5.](#remove-deprecated-usages) <a name="remove-deprecated-usages"></a> Remove all usages of deprecated API
 
 Now it is time to clean our application and to fix all code using a deprecated API.
+
+This clean up can be done step by step.
 
 I use the Scala API, and I prefer not to use any runtime dependency injection framework.
 
@@ -98,12 +101,14 @@ For more info about this topic, please refer to:
 - [my talk about it](http://de.slideshare.net/yann_s/play-24dimacwire) at the [play meetup](/blog/2015/05/20/di-with-play-2-dot-4/)
 - [this great post from Loïc Descotte](http://loicdescotte.github.io/posts/play24-compile-time-di/)
 
+This cleanup is necessary before updating to play 2.5, as deprecated API are likely to be removed in the next version.
+
 
 # [§](#migrate-from-2.4-to-2.5) <a name="migrate-from-2.4-to-2.5"></a> Migration from 2.4 to 2.5
 
 For that, the [migration guide](https://www.playframework.com/documentation/latest/Migration25) will be our reference.
 
-same steps as before:
+The migrate follow the same steps as [the previous migration](/#migrate-from-2.3-to-2.4):
 
 - [update the sbt config](#update-sbt-config), but to play 2.5:
 ```
