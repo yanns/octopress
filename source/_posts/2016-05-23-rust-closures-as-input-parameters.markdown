@@ -160,7 +160,7 @@ fn mark_done(todos: &mut Vec<Todo>, todo_id: i16) {
 }
 ```
 
-Trait objects force Rust to use dynamic dispatch. For that, Rust must allocate the closure in the heap.
+Trait objects force Rust to use dynamic dispatch.
 
 If I use type parameter instead of a trait object:
 ```
@@ -179,6 +179,6 @@ fn mark_done(todos: &mut Vec<Todo>, todo_id: i16) {
 }
 ```
 
-then Rust is able to monomorphize the closure and use static dispatch, without any heap allocation.
+then Rust is able to monomorphize the closure and use static dispatch, and does not need any object for the dyamic dispatch.
 
 Another great example of the [zero-cost abstraction](http://blog.rust-lang.org/2015/05/11/traits.html) possible with Rust!
