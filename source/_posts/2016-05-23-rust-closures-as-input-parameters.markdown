@@ -126,3 +126,57 @@ If you have any good source for this, please [tell me](https://twitter.com/simon
 In conclusion I still find closure as input parameters quite complex in Rust. I surely need to more understand the theory behind the language to fully understand them.
 
 The Rust community is very helpful, but it may not scale if there are more and more beginners like me.
+
+
+
+#### <a name="update-2016-05-25"></a> [_Update (May 25)_](#update-2016-05-25)
+
+The following [tweet](https://twitter.com/rustlang/status/734946700536774656) from [@rustlang](https://twitter.com/rustlang) provided me the good keywords to search for:
+
+{% blockquote @rustlang, https://twitter.com/rustlang/status/734946700536774656 %}
+it's about trait objects vs type parameters, which can be tough when you're learning
+{% endblockquote %}
+
+[Trait objects](https://doc.rust-lang.org/book/trait-objects.html) are used for [dynamic dispatch](https://en.wikipedia.org/wiki/Dynamic_dispatch), feature found in most OO languages.
+
+With that in mind, I could understand the [Rust book about closures](https://doc.rust-lang.org/book/closures.html#taking-closures-as-arguments).
+
+If I use trait objects, this version works:
+```
+fn with_todo_id(todos: &mut Vec<Todo>, todo_id: i16, f: &Fn(&mut Todo)) {
+    if let Some(todo) = todos.iter_mut().find(|todo| todo.id == todo_id) {
+        f(todo);
+    }
+}
+
+fn remove_todo(todos: &mut Vec<Todo>, todo_id: i16) {
+    with_todo_id(todos, todo_id, &|todo| todo.deleted = true);
+}
+
+fn mark_done(todos: &mut Vec<Todo>, todo_id: i16) {
+    with_todo_id(todos, todo_id, &|todo| todo.completed = true);
+}
+```
+
+Trait objects force Rust to use dynamic dispatch. For that, Rust must allocate the closure in the heap.
+
+If I use type parameter instead of a trait object:
+```
+fn with_todo_id<P>(todos: &mut Vec<Todo>, todo_id: i16, f: P) where P: Fn(&mut Todo) {
+    if let Some(todo) = todos.iter_mut().find(|todo| todo.id == todo_id) {
+        f(todo);
+    }
+}
+
+fn remove_todo(todos: &mut Vec<Todo>, todo_id: i16) {
+    with_todo_id(todos, todo_id, |todo| todo.deleted = true);
+}
+
+fn mark_done(todos: &mut Vec<Todo>, todo_id: i16) {
+    with_todo_id(todos, todo_id, |todo| todo.completed = true);
+}
+```
+
+then Rust is able to monomorphize the closure and use static dispatch, without any heap allocation.
+
+Another great example of the [zero-cost abstraction](http://blog.rust-lang.org/2015/05/11/traits.html) possible with Rust!
