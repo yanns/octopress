@@ -6,6 +6,8 @@ comments: true
 categories: 
 ---
 
+_Edit:_ [_Update (May 25)_](#update-2016-05-25)
+
 I am learning [Rust](https://www.rust-lang.org/) and, as a beginner, I have sometimes problems achieving some little tasks that would be so easy in other programming languages I know better.
 
 But when I met some Rust developers and they ask me about my difficulties, I often forget about them.
